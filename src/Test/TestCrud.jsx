@@ -23,7 +23,7 @@ export const TestCrud = ({edit = false}) => {
             console.log(dataAutomate)
             const res = dataAutomate.find(item => item.id === id);
             console.log('responsse',res);
-            setCurrentDatas(res);
+            localStorage.setItem('currentDatas', JSON.stringify(res));
         } catch (e) {
             console.log('error');
         }
@@ -57,8 +57,6 @@ export const TestCrud = ({edit = false}) => {
         if(edit) {
             const setValues = () => {
                 setInitialValues({
-                    nom: currentDatas.nom ?? '',
-                    code : currentDatas.code ??'',
                     ouvrages : currentDatas.ouvrages ? currentDatas.ouvrages.map(item => item.ouvrages) : [],
                     numeroAutomate: currentDatas.numeroAutomate ? automatesNumeros.find((automateNumero) => automateNumero.value === currentDatas.numeroAutomate) : null,
                 });
@@ -90,20 +88,29 @@ const TestCrudForm = ({initialValues, id, edit, automatesNumeros, ouvrages}) => 
         setDataAuto(dataAutomate);
     }, []);
 
+    const content = localStorage.setItem('dataAutomate', JSON.stringify(dataAutomate))
+    let getContent = JSON.parse(localStorage.getItem('dataAutomate'));
+    let getCurrentData = JSON.parse(localStorage.getItem('currentDatas'));
+    console.log(getCurrentData);
+
+
     const formik = useFormik({
         initialValues,
         validationSchema,
         onSubmit: async (values) => {
             try {
                 if (edit) {
-                    dataAuto[2].ouvrages = values.ouvrages;
-                    dataAuto[2].numeroAutomate = values.numeroAutomate;
+                    const setCurrentDatas = {...getCurrentData, numeroAutomate: values.numeroAutomate, ouvrages: [values.ouvrages]}
+                    localStorage.setItem('currentDatas', JSON.stringify(setCurrentDatas))
                     alert(`Update de le l'automate ${JSON.stringify(values)}`)
                     console.log(`Le test ${id} à bien été modifié`);
                     console.log('edit', dataAutomate);
                 } else {
-                    dataAuto[2].ouvrages = values.ouvrages;
-                    dataAuto[2].numeroAutomate = values.numeroAutomate;
+                    const setContent = getContent.push({
+                        numeroAutomate: values.numeroAutomate,
+                        ouvrages: ouvrages.push(values.ouvrages)
+                    });
+                    localStorage.setItem('dataAutomate', JSON.stringify(setContent))
                     alert(`Création good ${JSON.stringify(values)}`);
                     console.log("Le test à bien été créée");
                     console.log('create', dataAutomate);
@@ -121,7 +128,7 @@ const TestCrudForm = ({initialValues, id, edit, automatesNumeros, ouvrages}) => 
                   justifyContent="center"
                   alignItems="center"
             >
-                <Typography variant="h4">{edit ? `Modification d'un test` : `Création d'un test`}</Typography>
+                <Typography variant="h4">{edit ? `Modification d'un test ${id}` : `Création d'un test`}</Typography>
             </Grid>
             <TestForm
                 formik={formik}
