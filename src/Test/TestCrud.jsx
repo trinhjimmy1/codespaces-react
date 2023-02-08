@@ -8,7 +8,8 @@ import {TestForm, validationSchema} from "./TestForm";
 const defaultValue = {
     ouvrages : [],
     numeroAutomate : null
-}
+};
+
 export const TestCrud = ({edit = false}) => {
     const [initialValues, setInitialValues] = useState(undefined);
     const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +21,6 @@ export const TestCrud = ({edit = false}) => {
 
     const retrieveData = (id) => {
         try {
-            console.log(dataAutomate)
             const res = dataAutomate.find(item => item.id === id);
             console.log('responsse',res);
             localStorage.setItem('currentDatas', JSON.stringify(res));
@@ -28,6 +28,8 @@ export const TestCrud = ({edit = false}) => {
             console.log('error');
         }
     };
+
+    const getCurrentData = JSON.parse(localStorage.getItem('currentDatas'));
 
 
     useEffect(() => {
@@ -53,12 +55,24 @@ export const TestCrud = ({edit = false}) => {
         }))
     }, []);
 
+    //     useEffect(() => {
+    //     setAutomatesNumeros(automatesData.map(item => {
+    //         return {
+    //             value: item.id,
+    //             label: `${item.numeroAutomate} - ${item.nom} - ${item.code}`
+    //         }
+    //     }));
+    //     setOuvrages(ouvragesData.map(item =>item))
+    // }, []);
+    
+    // console.log(automatesNumeros);
+
     useEffect(() => {
         if(edit) {
             const setValues = () => {
                 setInitialValues({
-                    ouvrages : currentDatas.ouvrages ? currentDatas.ouvrages.map(item => item.ouvrages) : [],
-                    numeroAutomate: currentDatas.numeroAutomate ? automatesNumeros.find((automateNumero) => automateNumero.value === currentDatas.numeroAutomate) : null,
+                    ouvrages : getCurrentData.ouvrages ? getCurrentData.ouvrages.map(item => item.ouvrages) : [],
+                    numeroAutomate: getCurrentData.numeroAutomate ? automatesNumeros.find((automateNumero) => automateNumero.value === getCurrentData.numeroAutomate) : null,
                 });
             }
             setValues();
@@ -68,7 +82,8 @@ export const TestCrud = ({edit = false}) => {
     }, [currentDatas, automatesNumeros, ouvrages]);
     return (
         <>
-            {initialValues && <TestCrudForm
+            {initialValues &&
+             <TestCrudForm
                 id={id}
                 initialValues={initialValues}
                 edit={edit}
@@ -88,7 +103,6 @@ const TestCrudForm = ({initialValues, id, edit, automatesNumeros, ouvrages}) => 
         setDataAuto(dataAutomate);
     }, []);
 
-    const content = localStorage.setItem('dataAutomate', JSON.stringify(dataAutomate))
     let getContent = JSON.parse(localStorage.getItem('dataAutomate'));
     let getCurrentData = JSON.parse(localStorage.getItem('currentDatas'));
     console.log(getCurrentData);
@@ -100,6 +114,7 @@ const TestCrudForm = ({initialValues, id, edit, automatesNumeros, ouvrages}) => 
         onSubmit: async (values) => {
             try {
                 if (edit) {
+                    console.log('valueOuvrage', values.ouvrages)
                     const setCurrentDatas = {...getCurrentData, numeroAutomate: values.numeroAutomate, ouvrages: [values.ouvrages]}
                     localStorage.setItem('currentDatas', JSON.stringify(setCurrentDatas))
                     alert(`Update de le l'automate ${JSON.stringify(values)}`)

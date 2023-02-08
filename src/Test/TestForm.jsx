@@ -10,6 +10,7 @@ export const validationSchema = Yup.object().shape({
     ouvrages: Yup.array(),
 });
 export const TestForm = ({formik, isSubmitting, automates, automatesNumeros, ouvrages}) => {
+    console.log(formik);
 
     return (
         <Grid
@@ -50,13 +51,13 @@ export const TestForm = ({formik, isSubmitting, automates, automatesNumeros, ouv
                         disablePortal
                         defaultValue={formik.values.ouvrages}
                         onChange={(_, value) => {
-                            console.log(value);
                             const val = value ? value.map(item => item.value) : '';
                             formik.setFieldValue("ouvrages", val);
                         }}
                         options={ouvrages}
                         getOptionLabel={option => `${option.label}` }
                         getOptionSelected={(option, value) => {
+                            console.log(option);
                             return option.value === value.value
                         }}
                         renderInput={(params) =>

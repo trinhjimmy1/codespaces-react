@@ -63,6 +63,21 @@ export const automatesData = [
         code: "XD30"
     },
   ]
+
+//   export const ouvragesData = [
+//     {
+//         value: 2,
+//         label: "Test - xd12"
+//     },
+//     {
+//         value: 3,
+//         label: "dfdsff - xd15"
+//     },
+//     {
+//         value: 4,
+//         label: "hahahaha - XDDDD"
+//     },
+//   ]
   
   export const dataAutomate = [
     {
@@ -87,7 +102,9 @@ export const automatesData = [
         code: "test",
         numeroAutomate: "",
         codeIdentification: '',
-        ouvrages: [],
+        ouvrages: [
+            
+        ],
     },
     {
         id: 4,
